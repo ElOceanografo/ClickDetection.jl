@@ -63,12 +63,15 @@ end
     df = as_dataframe(clicks1)
     @test all(in(names(df)).(required_colnames))
     @test size(df,1) == length(clicks1)
+    @test eltype(df.waveform) <: Array
     df = as_dataframe(clicks1, DateTime(2019,1,1,0,0,0))
     @test size(df,1) == length(clicks1)
     @test all(in(names(df)).([required_colnames; :start_datetime; :stop_datetime]))
+    @test eltype(df.waveform) <: Array
     df = as_dataframe(clicks1, DateTime(2019,1,1,0,0,0), "fakefile.wav")
     @test all(in(names(df)).([required_colnames; :start_datetime; :stop_datetime; :wavfile]))
     @test size(df,1) == length(clicks1)
+    @test eltype(df.waveform) <: Array
     fakefiles = string.(1:length(clicks1))
     df = as_dataframe(clicks1, DateTime(2019,1,1,0,0,0), fakefiles)
     @test all(in(names(df)).([required_colnames; :start_datetime; :stop_datetime; :wavfile]))

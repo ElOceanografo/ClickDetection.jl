@@ -76,4 +76,16 @@ end
     df = as_dataframe(clicks1, DateTime(2019,1,1,0,0,0), fakefiles)
     @test all(in(names(df)).([required_colnames; :start_datetime; :stop_datetime; :wavfile]))
     @test size(df,1) == length(clicks1)
+
+    # make sure as_dataframe works with empty vector of clicks
+    df = as_dataframe(ClickPointer[])
+    println(names(df))
+    @test all(in(names(df)).(required_colnames))
+    df = as_dataframe(ClickPointer[], DateTime(2019,1,1,0,0,0))
+    @test all(in(names(df)).([required_colnames; :start_datetime; :stop_datetime]))
+    df = as_dataframe(ClickPointer[], DateTime(2019,1,1,0,0,0), "fakefile.wav")
+    @test all(in(names(df)).([required_colnames; :start_datetime; :stop_datetime; :wavfile]))
+    df = as_dataframe(ClickPointer[], DateTime(2019,1,1,0,0,0), ["fakefile.wav"])
+    @test all(in(names(df)).([required_colnames; :start_datetime; :stop_datetime; :wavfile]))
+
 end

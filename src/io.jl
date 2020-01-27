@@ -13,21 +13,39 @@ sample in the analyzed file).  The source file for the clicks can be included
 via th optional argument `wavfile` (either a `String` or `Vector{String}`).
 """
 function as_dataframe(clicks::Vector{T}, starttime::DateTime) where {T<:AbstractClick}
-    df = DataFrame(
-        (start=left(c),
-         stop=right(c),
-         start_datetime=starttime + Dates.Millisecond(round(left(c) * 1e3)),
-         stop_datetime=starttime + Dates.Millisecond(round(right(c) * 1e3)),
-         samplerate=samplerate(c),
-         waveform=samples(c)) for c in clicks)
+    if length(clicks) == 0
+        df = DataFrame(
+            start=Float64[],
+            stop=Float64[],
+            start_datetime=DateTime[],
+            stop_datetime=DateTime[],
+            samplerate=Float64[],
+            waveform=Vector{Float64}[])
+    else
+        df = DataFrame(
+            (start=left(c),
+             stop=right(c),
+             start_datetime=starttime + Dates.Millisecond(round(left(c) * 1e3)),
+             stop_datetime=starttime + Dates.Millisecond(round(right(c) * 1e3)),
+             samplerate=samplerate(c),
+             waveform=samples(c)) for c in clicks)
+    end
     return df
 end
 
 function as_dataframe(clicks::Vector{T}) where {T<:AbstractClick}
-    df = DataFrame((start=left(c),
-                    stop=right(c),
-                    samplerate=samplerate(c),
-                    waveform=samples(c)) for c in clicks)
+    if length(clicks) == 0
+        df = DataFrame(
+            start=Float64[],
+            stop=Float64[],
+            samplerate=Float64[],
+            waveform=Vector{Float64}[])
+    else
+        df = DataFrame((start=left(c),
+                        stop=right(c),
+                        samplerate=samplerate(c),
+                        waveform=samples(c)) for c in clicks)
+    end
     return df
 end
 
